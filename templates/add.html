@@ -1,0 +1,20 @@
+<form action="" method="POST">
+
+    <div class="mb-3">
+        <label for="ex" class="form-label">Пользователь<sup>*</sup></label>
+        <input type="text" name="worker" class="form-control" id="ex" aria-describedby="help"
+               value="{{ form_data.worker ?? '' }}"
+        >
+    </div>
+    <div class="mb-3">
+        <label for="ex2" class="form-label">E-mail<sup>*</sup></label>
+        <input type="email" name="email" class="form-control" id="ex2" aria-describedby="help"
+               value="{{ form_data.email ?? '' }}">
+    </div>
+    <div class="mb-3">
+        <label for="ex3" class="form-label">Описание задачи<sup>*</sup></label>
+        <textarea name="opis" class="form-control" id="ex3">{{ form_data.opis ?? '' }}</textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Добавить</button>
+
+</form>

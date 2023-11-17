@@ -1,0 +1,20 @@
+{% if warning|length > 0 %}
+<div class="row">
+    <div class="col-12 p-3">
+        <h2>Произошли ошибки</h2>
+        {% for w in warning %}
+        <p class="alert alert-danger">{{ w|e }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+{% if gooding|length > 0 %}
+<div class="row">
+    <div class="col-12 p-3">
+        {% for g in gooding %}
+        <p class="alert alert-success">{{ g|e }}</p>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
