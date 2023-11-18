@@ -26,7 +26,7 @@ class validateService extends baseController
                 // тип поля дата (дата 50 лет туда сюда)
                 if ($k == 'type' && $v == 'email') {
                     if ( !filter_var($inputs[$pole], FILTER_VALIDATE_EMAIL) ) {
-                        self::$error[] = 'Укажите ' . $pole . ' в формаате даты, 2023-01-01 (не более 50 лет от текущей даты)';
+                        self::$error[] = 'Укажите ' . $pole . ' в формате E-mail';
                     }
                 }
                 // тип почта
@@ -39,6 +39,12 @@ class validateService extends baseController
                 else if ($k == 'min') {
                     if (strlen($inputs[$pole]) < $v) {
                         self::$error[] = 'Длинна ' . $pole . ' должна быть более ' . $v . ' символа(ов)';
+                    }
+                }
+                // должен бытьт не пустой
+                else if ($k == 'need' && $v === true ) {
+                    if ( empty($inputs[$pole]) ) {
+                        self::$error[] = 'Заполните ' . $pole . ', пустые не пройдут';
                     }
                 }
                 self::$datas[$pole] = $inputs[$pole];
