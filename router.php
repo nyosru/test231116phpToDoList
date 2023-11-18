@@ -13,14 +13,17 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-        echo '<pre>',print_r($_POST),'</pre>';
-
+//        echo '<pre>',print_r($_POST),'</pre>';
         return appController::add($twig);
 
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+
         if ($_SERVER['REQUEST_URI'] == '/') {
 //            echo 'start';
             return appController::index($twig);
+        } else if ($_SERVER['REQUEST_URI'] == '/install') {
+//            echo 'start';
+            return appController::install($twig);
         } else {
             echo 'нет такого адреса ';
         }

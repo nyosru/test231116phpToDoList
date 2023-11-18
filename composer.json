@@ -3,7 +3,8 @@
         "psr-4": {
             "App\\": "app/",
             "controller\\": "controller/",
-            "controller\\service\\": "controller/service"
+            "controller\\service\\": "controller/service",
+            "model\\": "model"
         }
     },
     "require": {
