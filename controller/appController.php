@@ -150,7 +150,7 @@ class appController extends baseController
 
             $datain = [
                 'opis' => self::$validate_datas['opis'],
-                'finished' => $_POST['finished'] ? true : false
+                'finished' => !empty($_POST['finished']) ? true : false
             ];
             $items->updateItem($_POST['id'], $datain);
 
