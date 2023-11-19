@@ -3,6 +3,7 @@
 namespace controller\service;
 
 use controller\baseController;
+use Faker\Factory;
 use model\ItemsModel;
 
 class dbService extends baseController
@@ -38,9 +39,43 @@ class dbService extends baseController
     public function insert(string $table, array $data)
     {
         $db = $this->connect();
-        $sql = 'INSERT INTO ' . $table . ' ( title , mail , opis , finished ) VALUES (:title, :mail, :opis , :finished )';
+        $sql = 'INSERT INTO ' . $table . ' ( worker , mail , opis , finished ) VALUES (:worker, :mail, :opis , :finished )';
         $stmt = $db->prepare($sql);
         return $stmt->execute($data);
+    }
+
+    public function delete(string $table, int $id)
+    {
+        $db = $this->connect();
+        $sql = 'DELETE FROM ' . $table . ' WHERE id = :id';
+        $stmt = $db->prepare($sql);
+        return $stmt->execute(['id' => $id]);
+    }
+
+    public function update(string $table, int $id, $values )
+    {
+        $db = $this->connect();
+
+        $data_in_sql = [];
+        $sql_set = '';
+        foreach( $values as $k => $v ){
+
+            if( !empty($sql_set))
+                $sql_set .= ',';
+
+            $sql_set .= $k.' = :'.$k.' ';
+            $data_in_sql[$k] = $v;
+        }
+
+        $data_in_sql['id'] = $id;
+
+        $sql = 'UPDATE '.$table.' SET '.$sql_set.' WHERE id = :id ';
+        $stmt = $this->pdo->prepare($sql);
+        return $stmt->execute($data_in_sql);
+
+//        $sql = 'DELETE FROM ' . $table . ' WHERE id = :id';
+//        $stmt = $db->prepare($sql);
+//        return $stmt->execute(['id' => $id]);
     }
 
     public function install()
@@ -49,22 +84,30 @@ class dbService extends baseController
         try {
 
             $sql = 'CREATE TABLE IF NOT EXISTS Task ( 
-                id INTEGER AUTO_INCREMENT PRIMARY KEY, 
-                title VARCHAR(200), 
+                id INTEGER  primary key autoincrement , 
+                worker VARCHAR(200), 
                 mail  VARCHAR(200), 
                 opis TEXT, 
-                finished BOOL );';
+                finished BOOLEAN     
+    
+                );';
             $this->pdo->exec($sql);
 
             $sql = 'DELETE FROM Task;';
             $this->pdo->exec($sql);
 
+            // use the factory to create a Faker\Generator instance
+            $faker = Factory::create();
+
             // сидируем модельку
             for ($i = 0; $i <= 9; $i++) {
                 $this->insert('Task', [
-                    'title' => 'рандом текс и цифра ' . rand(),
-                    'mail' => 'mail@mail.ru',
-                    'opis' => 'Стартовое описание Стартовое описание Стартовое описание Стартовое описание',
+//                    'worker' => 'user ' . rand(),
+                    'worker' => $faker->name(),
+//                    'mail' => 'mail@mail.ru',
+                    'mail' => $faker->email(),
+//                    'opis' => 'Стартовое описание Стартовое описание Стартовое описание Стартовое описание',
+                    'opis' => $faker->text(),
                     'finished' => (rand(1, 2) == 1 ? true : false)
                 ]);
             }
@@ -78,11 +121,19 @@ class dbService extends baseController
 
     }
 
-    public function getData()
+    public function getData($table, $id = null)
     {
-        $sql = 'SELECT * FROM Task LIMIT 50;';
-        // выполняем SQL-выражение
-        return $this->pdo->exec($sql);
+
+        $db = $this->connect();
+
+        if (!empty($id)) {
+            $sql = 'SELECT * FROM ' . $table . ' WHERE `id` = ' . ((int)$id) . '  ;';
+        } else {
+            $sql = 'SELECT * FROM ' . $table . ' LIMIT 50;';
+        }
+
+        $row = $db->query($sql);
+        return $row->fetchAll();
 
     }
 

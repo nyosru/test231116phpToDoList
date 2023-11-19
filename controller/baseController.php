@@ -23,4 +23,14 @@ class baseController
         echo '<pre>',print_r($array),'</pre>';
     }
 
+    public static function secretCreate( string $string): string
+    {
+        return md5('соль '.$string );
+    }
+
+    public static function secretCheck( string $string, string $secret ): bool
+    {
+        return md5('соль '.$string ) == $secret ;
+    }
+
 }

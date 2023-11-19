@@ -4,6 +4,7 @@ namespace controller;
 
 use controller\service\dbService;
 use controller\service\validateService;
+use model\ItemsModel;
 
 class appController extends baseController
 {
@@ -21,19 +22,8 @@ class appController extends baseController
     public static function index($twig)
     {
 
-//        $db = new dbService();
-//        $db->connect();
-//        $data = $db->getData();
-//        self::dd($data);
-
-        self::$var_in['list'] = [];
-        for ($i = 0; $i <= 10; $i++) {
-            self::$var_in['list'][] = [
-                'date' => rand(1980, 2020) . '-' . rand(10, 12) . '-' . rand(10, 28),
-                'title' => 'asd' . rand(),
-                'opis' => 'asd ' . rand() . 'asd ' . rand() . 'asd ' . rand() . 'asd ' . rand(),
-            ];
-        }
+        $items = new ItemsModel();
+        self::$var_in['list'] = $items->getItems();
 
         echo $twig->render('index.html', self::$var_in);
 
@@ -56,6 +46,42 @@ class appController extends baseController
     }
 
     /**
+     * обработка удаления записи
+     * @param $twig
+     * @return void
+     */
+    public static function delete($twig, $id)
+    {
+        $item = new ItemsModel();
+        $item->deleteItem($id);
+        self::$var_in['warning'] = ['ЗАпись №' . $id . ' удалена'];
+        self::index($twig);
+    }
+
+    /**
+     * показ формы редактирование записи
+     * @param $twig
+     * @return void
+     */
+    public static function edit($twig, $id)
+    {
+        $item = new ItemsModel();
+        self::$var_in['edit_item'] = $item->getData('Task', $id);
+
+        if( empty(self::$var_in['edit_item'][0]) )
+            throw new \Exception('вот вот и получится, но пока не прокатит (нет итема)',451);
+
+        self::$var_in['form_data'] = self::$var_in['edit_item'][0];
+//        self::$var_in['form_data']['secret'] = md5('соль'.$id );
+        self::$var_in['form_data']['secret'] = self::secretCreate($id);
+//        self::$var_in['form_data'] = $item->getData('Task', $id);
+//        self::dd(self::$var_in['edit_item']);
+        self::dd(self::$var_in['form_data']);
+//        self::$var_in['warning'] = ['ЗАпись №'.$id.' удалена'];
+        self::index($twig);
+    }
+
+    /**
      * обработка добавления записи
      * @param $twig
      * @return void
@@ -67,7 +93,7 @@ class appController extends baseController
 
         self::baseValidate($_REQUEST, [
             'worker' => ['need' => true],
-            'email' => [
+            'mail' => [
                 'need' => true,
                 'type' => 'email'
             ],
@@ -86,26 +112,53 @@ class appController extends baseController
             // echo '<pre>', print_r(self::$validate_datas, true), '</pre>';
 
             self::$var_in['gooding'] = [];
-            self::$var_in['gooding'][] = 'ЗАпись добавлена';
+            self::$var_in['gooding'][] = 'Запись добавлена';
 
         }
 
         self::index($twig);
 
-//        echo '<pre>',print_r($validate::$error),'</pre>';
-//        die();
+    }
 
+    /**
+     * обработка изменения записи
+     * @param $twig
+     * @return void
+     */
+    public static function saveEdit($twig)
+    {
 
-//        $var['list'] => $list , 'warning' => $warning , 'gooding' => $gooding ]
+        self::$var_in['form_data'] = $_POST;
 
-//        $var['list'] = [];
-//        for ($i = 0; $i <= 10; $i++) {
-//            $var['list'][] = [
-//                'title' => 'asd' . rand()
-//            ];
-//        }
-//
-//        echo $twig->render('index.html', $var);
+        self::baseValidate($_POST, [
+            'opis' => ['need' => true],
+        ]);
+
+        // если проверка секрета не прошла
+        if (!self::secretCheck($_POST['id'] ?? 'x', $_POST['secret'] ?? 'x')) {
+            throw new \Exception('Что то пошло не так', 400);
+        }
+
+        // если ошибки найдены
+        if (!empty(self::$validate_error)) {
+            self::$var_in['warning'] = self::$validate_error;
+        } // ошибок нет > добавляем проверенные данные
+        else {
+            self::$var_in['form_data'] = [];
+
+            $items = new ItemsModel();
+
+            $datain = [
+                'opis' => self::$validate_datas['opis'],
+                'finished' => $_POST['finished'] ? true : false
+            ];
+            $items->updateItem($_POST['id'], $datain);
+
+            self::$var_in['gooding'] = ['Запись #' . $_POST['id'] . ' изменена'];
+
+        }
+
+        self::index($twig);
 
     }
 

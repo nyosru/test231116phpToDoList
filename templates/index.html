@@ -6,8 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <!-- Bootstrap CSS -->
-<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"-->
-<!--          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">-->
+    <!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"-->
+    <!--          integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">-->
 
     <link href="/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
 
@@ -21,7 +21,7 @@
             <svg class="bi me-2" width="40" height="32">
                 <use xlink:href="#bootstrap"></use>
             </svg>
-            <span class="fs-4">ТуДу супер штука</span>
+            <span class="fs-4">ТуДу пушка</span>
         </a>
         <!--        <form class="col-12 col-lg-auto mb-3 mb-lg-0" role="search">-->
         <!--            <input type="search" class="form-control" placeholder="Search..." aria-label="Search">-->
@@ -39,7 +39,8 @@
                 {% include 'add.html' %}
             </div>
         </div>
-        
+
+        {% if list %}
         <div class="row">
             <div class="col-12">
 
@@ -48,6 +49,7 @@
                     <tr>
                         <th>Задача</th>
                         <th>Действия</th>
+                        <th>Задача выполнена ?</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -55,12 +57,17 @@
 
                     <tr>
                         <td>
-                            <b>{{ li.title }}</b><br/>
-                            {{ li.date }}<br/>
-                            <small>{{ li.opis }}</small>
+                            {{ li.id }}
+                            <b>{{ li.worker }}</b><br/>
+                            <A href="mailto:{{ li.mail }}">{{ li.mail }}</a><br/>
+                            <small>{{ li.opis|nl2br }}</small>
                         </td>
                         <td>
-                            <button>Удалить</button>
+                            <a href="/delete?id={{ li.id }}" onclick="return confirm('удалить запись №{{ li.id }} ?')">Удалить</a>
+                            <a href="/edit?id={{ li.id }}" >Редактировать</a>
+                        </td>
+                        <td>
+                            {{ li.finished ? 'да' : '-' }}
                         </td>
                     </tr>
 
@@ -70,8 +77,15 @@
 
             </div>
         </div>
+        {% endif %}
     </div>
 </main>
+
+<style>
+    table tbody tr td:nth-child(3){
+        text-align: center;
+    }
+</style>
 
 </body>
 <!-- Optional JavaScript; choose one of the two! -->

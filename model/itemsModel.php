@@ -7,9 +7,11 @@ use controller\service\dbService;
 class ItemsModel extends \controller\service\dbService
 {
 
-    public function get()
+    public function getItems(): array
     {
 //        $this->connect();
+        $res = $this->getData('Task');
+        return $res;
     }
 
     /**
@@ -25,6 +27,21 @@ class ItemsModel extends \controller\service\dbService
         $ee = $this->insert('Task', $data);
 //        echo '<pre>',print_r($ee);
 //        self::dd($ee);
+    }
+
+    public function deleteItem(int $id)
+    {
+        $ee = $this->delete('Task', $id);
+    }
+
+    /**
+     * @param int $id
+     * @param array $update данные что обновим ( ключ значение )
+     * @return void
+     */
+    public function updateItem(int $id, array $update ): void
+    {
+        $ee = $this->update('Task', $id, $update);
     }
 
 }
