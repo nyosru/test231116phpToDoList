@@ -1,20 +1,53 @@
-<form action="" method="POST">
+<h2>
+    {% if form_data.id %}
+    Редактировать
+    {% else %}
+    Добавить
+    {% endif %}
+    запись</h2>
+
+<form
+        {% if form_data.id %}
+        action="/save_edit"
+        {% else %}
+        action=""
+        {% endif %}
+
+        method="POST">
 
     <div class="mb-3">
         <label for="ex" class="form-label">Пользователь<sup>*</sup></label>
-        <input type="text" name="worker" class="form-control" id="ex" aria-describedby="help"
+        <input type="text" {% if form_data.id %} disabled="disabled" {% endif %} name="worker" class="form-control"
+               id="ex" aria-describedby="help"
                value="{{ form_data.worker ?? '' }}"
         >
     </div>
     <div class="mb-3">
         <label for="ex2" class="form-label">E-mail<sup>*</sup></label>
-        <input type="email" name="email" class="form-control" id="ex2" aria-describedby="help"
-               value="{{ form_data.email ?? '' }}">
+        <input type="email" {% if form_data.id %} disabled="disabled" {% endif %} name="mail" class="form-control"
+               id="ex2" aria-describedby="help"
+               value="{{ form_data.mail ?? '' }}">
     </div>
     <div class="mb-3">
         <label for="ex3" class="form-label">Описание задачи<sup>*</sup></label>
         <textarea name="opis" class="form-control" id="ex3">{{ form_data.opis ?? '' }}</textarea>
     </div>
+
+    {% if form_data.id %}
+    <div class="mb-3">
+        <label for="ex3" class="form-label">Выполнено ?</label>
+        <input type="checkbox" name="finished" value="1" {% if form_data.finished == 1 %} checked="checked" {% endif %} />
+    </div>
+    {% endif %}
+
+
+    {% if form_data.id %}
+    <input type="hidden" name="id" value="{{ form_data.id }}"/>
+    <!--    добавил секрет с солью чтобы левые запросы не прошли-->
+    <input type="hidden" name="secret" value="{{ form_data.secret }}"/>
+    <button type="submit" class="btn btn-primary">Сохранить</button>
+    {% else %}
     <button type="submit" class="btn btn-primary">Добавить</button>
+    {% endif %}
 
 </form>
