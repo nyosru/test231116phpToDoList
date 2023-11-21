@@ -6,8 +6,8 @@ use controller\baseController;
 
 $loader = new \Twig\Loader\FilesystemLoader('../templates');
 $twig = new \Twig\Environment($loader, [
-    'cache' => 'template_c',
-    'auto_reload' => true
+//    'cache' => 'template_c',
+//    'auto_reload' => true
 ]);
 
 // сортировка
