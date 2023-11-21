@@ -72,10 +72,6 @@ class dbService extends baseController
         $sql = 'UPDATE ' . $table . ' SET ' . $sql_set . ' WHERE id = :id ';
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data_in_sql);
-
-//        $sql = 'DELETE FROM ' . $table . ' WHERE id = :id';
-//        $stmt = $db->prepare($sql);
-//        return $stmt->execute(['id' => $id]);
     }
 
     public function install()
@@ -102,21 +98,14 @@ class dbService extends baseController
             // сидируем модельку
             for ($i = 0; $i <= 9; $i++) {
                 $this->insert('Task', [
-//                    'worker' => 'user ' . rand(),
                     'worker' => $faker->name(),
-//                    'mail' => 'mail@mail.ru',
                     'mail' => $faker->email(),
-//                    'opis' => 'Стартовое описание Стартовое описание Стартовое описание Стартовое описание',
                     'opis' => $faker->text(),
                     'finished' => (rand(1, 2) == 1 ? true : false)
                 ]);
             }
 
         } catch (\PDOException $ex) {
-            echo 'Ошибка БД (';
-            echo '<pre>';
-            print_r($ex);
-            echo '</pre>';
         }
 
     }
@@ -129,12 +118,10 @@ class dbService extends baseController
         if (!empty($id)) {
             $sql = 'SELECT * FROM ' . $table . ' WHERE `id` = ' . ((int)$id) . '  ;';
         } else {
-//            $sql = 'SELECT * FROM ' . $table . ' LIMIT 50;';
             $limit = $this->pageLimitGenerate(3, $page);
             $sort = $this->sortGenerate();
             $sql = 'SELECT * FROM ' . $table .' '. $sort . ' ' .$limit . ' ;';
         }
-//        echo $sql;
         $row = $db->query($sql);
         return $row->fetchAll();
 
@@ -148,8 +135,6 @@ class dbService extends baseController
         $sql = 'SELECT COUNT(id) as count FROM ' . $table . ' ;';
         $row = $db->query($sql);
         $res = $row->fetchAll()[0];
-//        echo '<pre>';
-//        print_r([ __FILE__, $res ]);
         return $res;
 
     }

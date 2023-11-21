@@ -40,18 +40,12 @@ class ItemsModel extends \controller\service\dbService
      */
     public function add(array $data)
     {
-//        $db = new dbService();
-//        $sql = "INSERT INTO `Task` ( title , mail , opis , finished ) VALUES (:title, :mail, :opis , :finished )";
-//        $stmt = $db->prepare($sql);
-//        $stmt->execute($data);
-        $ee = $this->insert('Task', $data);
-//        echo '<pre>',print_r($ee);
-//        self::dd($ee);
+        $this->insert('Task', $data);
     }
 
     public function deleteItem(int $id)
     {
-        $ee = $this->delete('Task', $id);
+        $this->delete('Task', $id);
     }
 
     /**
@@ -61,7 +55,7 @@ class ItemsModel extends \controller\service\dbService
      */
     public function updateItem(int $id, array $update ): void
     {
-        $ee = $this->update('Task', $id, $update);
+        $this->update('Task', $id, $update);
     }
 
 }

@@ -24,7 +24,6 @@ class appController extends baseController
 
         $items = new ItemsModel();
         self::$var_in['pages'] = $items->getPages(3, $_REQUEST['page'] ?? 1);
-//        self::dd(self::$var_in);
         self::$var_in['list'] = $items->getItems(self::$var_in['pages']['now']);
         self::$var_in['sort'] = $_SESSION['sort'] ?? [];
 
@@ -39,18 +38,14 @@ class appController extends baseController
 
     /**
      * установка бд и всё такое
+     * создаём таблички если нет, удаляем всё, заливаем тест данные
      * @return void
      */
     public static function install(): void
     {
-
         $db = new dbService();
-        // создаём таблички если нет, удаляем всё, заливаем тест данные
         $db->install();
         echo '<div style="text-align:Center; margin-top: 40vh; font-size:2rem;" >установка проведена, <a href="/">переходите на гланую страницу</a></div>';
-
-        return;
-
     }
 
     /**
@@ -81,13 +76,7 @@ class appController extends baseController
             throw new \Exception('вот вот и получится, но пока не прокатит (нет итема)', 451);
 
         self::$var_in['form_data'] = self::$var_in['edit_item'][0];
-//        self::$var_in['form_data']['secret'] = md5('соль'.$id );
         self::$var_in['form_data']['secret'] = self::secretCreate($id);
-//        self::$var_in['form_data'] = $item->getData('Task', $id);
-//        self::dd(self::$var_in['edit_item']);
-//        self::dd(self::$var_in['form_data']);
-//        self::$var_in['warning'] = ['ЗАпись №'.$id.' удалена'];
-
         self::index($twig);
     }
 
@@ -116,16 +105,7 @@ class appController extends baseController
         } // ошибок нет > добавляем проверенные данные
         else {
 
-            // echo __FILE__ . ' ' . __LINE__;
-            // echo '<pre>', print_r(self::$validate_datas, true), '</pre>';
-
             $items = new ItemsModel();
-
-//            $datain = [
-//                'opis' => self::$validate_datas['opis'],
-//                'finished' => !empty($_POST['finished']) ? true : false
-//            ];
-
             $in = self::$validate_datas;
             $in['finished'] = false;
 

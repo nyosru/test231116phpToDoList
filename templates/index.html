@@ -70,7 +70,6 @@
                         <small>{{ li.opis|nl2br }}</small>
                     </td>
                     <td>
-                        <a href="/delete?id={{ li.id }}" onclick="return confirm('удалить запись №{{ li.id }} ?')">Удалить</a>
                         {% if admin %}
                         <a href="/edit?id={{ li.id }}">Редактировать</a>
                         {% endif %}
