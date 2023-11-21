@@ -20,7 +20,7 @@
                     <th>#                    </th>
                     <th>
                         Имя пользователя
-                        <div class="text-black-50" style="font-size: 12px;">
+                        <div class="text-black-50 small" >
                             сортировка<br/>
                             <a href="?page={{ page ?? 1 }}&sortBy[worker]={% if sort.worker == 'asc' %}no{% else %}asc{% endif %}"
                                class="p-1 {% if sort.worker == 'asc' %}bg-success text-white{% else %}bg-light{% endif %}">А-Я</a>
@@ -30,7 +30,7 @@
                     </th>
                     <th>
                         Email
-                        <div class="text-black-50" style="font-size: 12px;">
+                        <div class="text-black-50 small">
                             сортировка<br/>
                             <a href="?page={{ page ?? 1 }}&sortBy[mail]={% if sort.mail == 'asc' %}no{% else %}asc{% endif %}"
                                class="p-1 {% if sort.mail == 'asc' %}bg-success text-white{% else %}bg-light{% endif %}">А-Я</a>
@@ -43,7 +43,7 @@
                     <th>Действия</th>
                     <th>Статус<br/>
                         (Задача выполнена?)<br/>
-                        <div class="text-black-50" style="font-size: 12px;">
+                        <div class="text-black-50 small">
                             сортировка<br/>
                             <a href="?page={{ page ?? 1 }}&sortBy[finished]={% if sort.finished == 'asc' %}no{% else %}asc{% endif %}"
                                class="p-1 {% if sort.finished == 'asc' %}bg-success text-white{% else %}bg-light{% endif %}">А-Я</a>
@@ -71,7 +71,9 @@
                     </td>
                     <td>
                         <a href="/delete?id={{ li.id }}" onclick="return confirm('удалить запись №{{ li.id }} ?')">Удалить</a>
+                        {% if admin %}
                         <a href="/edit?id={{ li.id }}">Редактировать</a>
+                        {% endif %}
                     </td>
                     <td>
                         {{ li.finished ? 'да' : '-' }}

@@ -73,11 +73,12 @@ class appController extends baseController
      */
     public static function edit($twig, $id)
     {
+
         $item = new ItemsModel();
         self::$var_in['edit_item'] = $item->getData('Task', $id);
 
-        if( empty(self::$var_in['edit_item'][0]) )
-            throw new \Exception('вот вот и получится, но пока не прокатит (нет итема)',451);
+        if (empty(self::$var_in['edit_item'][0]))
+            throw new \Exception('вот вот и получится, но пока не прокатит (нет итема)', 451);
 
         self::$var_in['form_data'] = self::$var_in['edit_item'][0];
 //        self::$var_in['form_data']['secret'] = md5('соль'.$id );
@@ -86,6 +87,7 @@ class appController extends baseController
 //        self::dd(self::$var_in['edit_item']);
 //        self::dd(self::$var_in['form_data']);
 //        self::$var_in['warning'] = ['ЗАпись №'.$id.' удалена'];
+
         self::index($twig);
     }
 
@@ -114,10 +116,21 @@ class appController extends baseController
         } // ошибок нет > добавляем проверенные данные
         else {
 
-            self::$var_in['form_data'] = [];
-
             // echo __FILE__ . ' ' . __LINE__;
             // echo '<pre>', print_r(self::$validate_datas, true), '</pre>';
+
+            $items = new ItemsModel();
+
+//            $datain = [
+//                'opis' => self::$validate_datas['opis'],
+//                'finished' => !empty($_POST['finished']) ? true : false
+//            ];
+
+            $in = self::$validate_datas;
+            $in['finished'] = false;
+
+            $items->add($in);
+            self::$var_in['form_data'] = [];
 
             self::$var_in['gooding'] = [];
             self::$var_in['gooding'][] = 'Запись добавлена';
@@ -136,34 +149,41 @@ class appController extends baseController
     public static function saveEdit($twig)
     {
 
-        self::$var_in['form_data'] = $_POST;
+        if ($_SESSION['admin'] === true) {
 
-        self::baseValidate($_POST, [
-            'opis' => ['need' => true],
-        ]);
 
-        // если проверка секрета не прошла
-        if (!self::secretCheck($_POST['id'] ?? 'x', $_POST['secret'] ?? 'x')) {
-            throw new \Exception('Что то пошло не так', 400);
-        }
+            self::$var_in['form_data'] = $_POST;
 
-        // если ошибки найдены
-        if (!empty(self::$validate_error)) {
-            self::$var_in['warning'] = self::$validate_error;
-        } // ошибок нет > добавляем проверенные данные
+            self::baseValidate($_POST, [
+                'opis' => ['need' => true],
+            ]);
+
+            // если проверка секрета не прошла
+            if (!self::secretCheck($_POST['id'] ?? 'x', $_POST['secret'] ?? 'x')) {
+                throw new \Exception('Что то пошло не так', 400);
+            }
+
+            // если ошибки найдены
+            if (!empty(self::$validate_error)) {
+                self::$var_in['warning'] = self::$validate_error;
+            } // ошибок нет > добавляем проверенные данные
+            else {
+                self::$var_in['form_data'] = [];
+
+                $items = new ItemsModel();
+
+                $datain = [
+                    'opis' => self::$validate_datas['opis'],
+                    'finished' => !empty($_POST['finished']) ? true : false
+                ];
+                $items->updateItem($_POST['id'], $datain);
+
+                self::$var_in['gooding'] = ['Запись #' . $_POST['id'] . ' изменена'];
+
+            }
+        } // если не авторизован
         else {
-            self::$var_in['form_data'] = [];
-
-            $items = new ItemsModel();
-
-            $datain = [
-                'opis' => self::$validate_datas['opis'],
-                'finished' => !empty($_POST['finished']) ? true : false
-            ];
-            $items->updateItem($_POST['id'], $datain);
-
-            self::$var_in['gooding'] = ['Запись #' . $_POST['id'] . ' изменена'];
-
+            throw new \Exception('чтобы сохранить изменения пройдите авторизацию и повторите', 453);
         }
 
         self::index($twig);

@@ -3,7 +3,7 @@
 <div class="alert alert-warning">{{ admin_flash }}</div>{% endif %}
 {% if admin %}
 <div class="alert alert-success">Авторизован Админ
-    <form style="min-width: 300px;" action="/admin" method="post">
+    <form action="/admin" method="post">
         <button type="submit" name="exit" value="da">Выйти</button>
     </form>
 </div>
@@ -14,9 +14,13 @@
     <div class="text-nowrap">
         Админ вход ( admin 123 )
         <br/>
-        <input type="text" class=" inline" name="login" placeholder="Логин" style="width:100px;" required>
-        <input type="password" class=" inline" name="password" placeholder="Пароль" style="width:100px;" required>
+        <input type="text" class=" inline w100" name="login" placeholder="Логин" required>
+        <input type="password" class=" inline w100" name="password" placeholder="Пароль" required>
         <button type="submit">Войти</button>
     </div>
 </form>
 {% endif %}
+
+<style>
+    .w100{ width:100px; }
+</style>

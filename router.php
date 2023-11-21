@@ -47,29 +47,12 @@ try {
 //            echo 'start';
             appController::install($twig);
         } else {
-//            echo '<div style="text-align:center;font-size:2rem; margin-top:40vh;" >нет такой страницы <a href="/">Перейти на первую страницу</a></div>';
             throw new \Exception('ссылка неверная', 452);
         }
 
     }
 
-//    echo '<br/>';
-//    echo '<br/>';
-//    echo '<br/>';
-//
-//    echo '<pre>', print_r(
-//        [__FILE__,
-//            '$_SERVER' => $_SERVER,
-//            $_GET,
-//            '$_SERVER[REQUEST_METHOD]' => $_SERVER['REQUEST_METHOD']
-//        ], true), '</pre>';
-//    die();
-
 } catch (\Exception $ex) {
-
-//    echo '<pre>', print_r($ex), '</pre>';
-//    echo '<pre>', print_r($ex->getMessage()), '</pre>';
-    echo '<pre>', print_r($_SERVER), '</pre>';
 
     $var_in = ['warning' => [
         'Варнинг! №' . $ex->getCode(),
@@ -79,7 +62,10 @@ try {
 
 } catch (\Throwable $ex) {
 
-    echo '<pre>', print_r($ex), '</pre>';
-    echo '<pre>', print_r($ex->getMessage()), '</pre>';
+    $var_in = ['warning' => [
+        'Варнинг! №' . $ex->getCode(),
+        $ex->getMessage()
+    ]];
+    echo $twig->render('index.html', $var_in);
 
 }
