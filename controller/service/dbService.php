@@ -11,7 +11,7 @@ class dbService extends baseController
 
     public $connect = false;
 
-    public $db_file = 'db.sqlite';
+    public $db_file = '../db.sqlite';
 
     /**
      * PDO instance
