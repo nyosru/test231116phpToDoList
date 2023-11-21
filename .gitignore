@@ -2,3 +2,6 @@
 .env
 /vendor/
 *.sqlite
+templates/.DS_Store
+controller/.DS_Store
+.DS_Store
