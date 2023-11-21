@@ -5,22 +5,52 @@
 
     {% include 'alerts.html' %}
 
-    <div class="row">
-        <div class="col-12 p-3">
-            {% include 'add.html' %}
-        </div>
-    </div>
-
     {% if list %}
     <div class="row">
         <div class="col-12">
 
+            <!--            {% for k,v in sort %}-->
+            <!--            <br/>{{ k }} - {{ v }}-->
+            <!--            {% endfor %}-->
+            <!--<br/>-->
+            <!--            {{ sort.worker }}-->
             <table class="table table-success table-striped">
                 <thead>
                 <tr>
-                    <th>Задача</th>
+                    <th>#                    </th>
+                    <th>
+                        Имя пользователя
+                        <div class="text-black-50" style="font-size: 12px;">
+                            сортировка<br/>
+                            <a href="?page={{ page ?? 1 }}&sortBy[worker]={% if sort.worker == 'asc' %}no{% else %}asc{% endif %}"
+                               class="p-1 {% if sort.worker == 'asc' %}bg-success text-white{% else %}bg-light{% endif %}">А-Я</a>
+                            <a href="/?page={{ page ?? 1 }}&sortBy[worker]={% if sort.worker == 'desc' %}no{% else %}desc{% endif %}"
+                               class="p-1 {% if sort.worker == 'desc' %}bg-success text-white{% else %}bg-light{% endif %}">Я-А</a>
+                        </div>
+                    </th>
+                    <th>
+                        Email
+                        <div class="text-black-50" style="font-size: 12px;">
+                            сортировка<br/>
+                            <a href="?page={{ page ?? 1 }}&sortBy[mail]={% if sort.mail == 'asc' %}no{% else %}asc{% endif %}"
+                               class="p-1 {% if sort.mail == 'asc' %}bg-success text-white{% else %}bg-light{% endif %}">А-Я</a>
+                            <a href="/?page={{ page ?? 1 }}&sortBy[mail]={% if sort.mail == 'desc' %}no{% else %}desc{% endif %}"
+                               class="p-1 {% if sort.mail == 'desc' %}bg-success text-white{% else %}bg-light{% endif %}">Я-А</a>
+                        </div>
+                    </th>
+                    <th>Задача
+                    </th>
                     <th>Действия</th>
-                    <th>Задача выполнена ?</th>
+                    <th>Статус<br/>
+                        (Задача выполнена?)<br/>
+                        <div class="text-black-50" style="font-size: 12px;">
+                            сортировка<br/>
+                            <a href="?page={{ page ?? 1 }}&sortBy[finished]={% if sort.finished == 'asc' %}no{% else %}asc{% endif %}"
+                               class="p-1 {% if sort.finished == 'asc' %}bg-success text-white{% else %}bg-light{% endif %}">А-Я</a>
+                            <a href="/?page={{ page ?? 1 }}&sortBy[finished]={% if sort.finished == 'desc' %}no{% else %}desc{% endif %}"
+                               class="p-1 {% if sort.finished == 'desc' %}bg-success text-white{% else %}bg-light{% endif %}">Я-А</a>
+                        </div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
@@ -29,8 +59,14 @@
                 <tr>
                     <td>
                         {{ li.id }}
+                    </td>
+                    <td>
                         <b>{{ li.worker }}</b><br/>
+                    </td>
+                    <td>
                         <A href="mailto:{{ li.mail }}">{{ li.mail }}</a><br/>
+                    </td>
+                    <td>
                         <small>{{ li.opis|nl2br }}</small>
                     </td>
                     <td>
@@ -46,8 +82,23 @@
                 </tbody>
             </table>
 
+            <ul class="pagination justify-content-center">
+                {% for page in pages.links %}
+                <li class="page-item {% if page.active %} active {% endif %}">
+                    <a class="page-link" href="/?{{ page.link }}">{{ page.number }}</a>
+                </li>
+                {% endfor %}
+            </ul>
+
         </div>
     </div>
     {% endif %}
+
+    <div class="row">
+        <div class="col-12 p-3">
+            {% include 'add.html' %}
+        </div>
+    </div>
+
 </div>
 {% endblock %}

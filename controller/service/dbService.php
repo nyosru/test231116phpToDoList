@@ -52,24 +52,24 @@ class dbService extends baseController
         return $stmt->execute(['id' => $id]);
     }
 
-    public function update(string $table, int $id, $values )
+    public function update(string $table, int $id, $values)
     {
         $db = $this->connect();
 
         $data_in_sql = [];
         $sql_set = '';
-        foreach( $values as $k => $v ){
+        foreach ($values as $k => $v) {
 
-            if( !empty($sql_set))
+            if (!empty($sql_set))
                 $sql_set .= ',';
 
-            $sql_set .= $k.' = :'.$k.' ';
+            $sql_set .= $k . ' = :' . $k . ' ';
             $data_in_sql[$k] = $v;
         }
 
         $data_in_sql['id'] = $id;
 
-        $sql = 'UPDATE '.$table.' SET '.$sql_set.' WHERE id = :id ';
+        $sql = 'UPDATE ' . $table . ' SET ' . $sql_set . ' WHERE id = :id ';
         $stmt = $this->pdo->prepare($sql);
         return $stmt->execute($data_in_sql);
 
@@ -121,7 +121,7 @@ class dbService extends baseController
 
     }
 
-    public function getData($table, $id = null)
+    public function getData($table, $id = null, $page = 1)
     {
 
         $db = $this->connect();
@@ -129,12 +129,49 @@ class dbService extends baseController
         if (!empty($id)) {
             $sql = 'SELECT * FROM ' . $table . ' WHERE `id` = ' . ((int)$id) . '  ;';
         } else {
-            $sql = 'SELECT * FROM ' . $table . ' LIMIT 50;';
+//            $sql = 'SELECT * FROM ' . $table . ' LIMIT 50;';
+            $limit = $this->pageLimitGenerate(3, $page);
+            $sort = $this->sortGenerate();
+            $sql = 'SELECT * FROM ' . $table .' '. $sort . ' ' .$limit . ' ;';
         }
-
+//        echo $sql;
         $row = $db->query($sql);
         return $row->fetchAll();
 
+    }
+
+    public function getCount($table)
+    {
+
+        $db = $this->connect();
+
+        $sql = 'SELECT COUNT(id) as count FROM ' . $table . ' ;';
+        $row = $db->query($sql);
+        $res = $row->fetchAll()[0];
+//        echo '<pre>';
+//        print_r([ __FILE__, $res ]);
+        return $res;
+
+    }
+
+    function pageLimitGenerate($on_page, $now_page): string
+    {
+        return 'LIMIT ' . ( $now_page == 1 ? $on_page : (($now_page - 1) * $on_page) . ', ' . $on_page );
+    }
+
+    function sortGenerate(): string
+    {
+        $sort = '';
+        foreach( $_SESSION['sort'] as $k => $v ){
+            if($v == 'asc' || $v == 'desc') {
+                if (!empty($sort))
+                    $sort .= ', ';
+
+                $sort .= $k . ' ' . $v;
+            }
+        }
+
+        return !empty($sort) ? 'ORDER BY ' . $sort : '';
     }
 
 }

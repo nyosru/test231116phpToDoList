@@ -23,7 +23,15 @@ class appController extends baseController
     {
 
         $items = new ItemsModel();
-        self::$var_in['list'] = $items->getItems();
+        self::$var_in['pages'] = $items->getPages(3, $_REQUEST['page'] ?? 1);
+//        self::dd(self::$var_in);
+        self::$var_in['list'] = $items->getItems(self::$var_in['pages']['now']);
+        self::$var_in['sort'] = $_SESSION['sort'] ?? [];
+
+        self::$var_in['admin'] = $_SESSION['admin'] ?? false;
+
+        self::$var_in['admin_flash'] = $_SESSION['admin_flash'] ?? '';
+        $_SESSION['admin_flash'] = '';
 
         echo $twig->render('index.html', self::$var_in);
 
@@ -76,7 +84,7 @@ class appController extends baseController
         self::$var_in['form_data']['secret'] = self::secretCreate($id);
 //        self::$var_in['form_data'] = $item->getData('Task', $id);
 //        self::dd(self::$var_in['edit_item']);
-        self::dd(self::$var_in['form_data']);
+//        self::dd(self::$var_in['form_data']);
 //        self::$var_in['warning'] = ['ЗАпись №'.$id.' удалена'];
         self::index($twig);
     }

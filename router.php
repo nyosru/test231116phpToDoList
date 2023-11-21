@@ -1,13 +1,19 @@
 <?php
 
+use controller\adminController;
 use controller\appController;
-
-//    $app = new \controller\appController();
+use controller\baseController;
 
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 $twig = new \Twig\Environment($loader, [
 //        'cache' => __DIR__ . '/templates_cache',
 ]);
+
+$uri = parse_url($_SERVER['REQUEST_URI']);
+
+// сортировка
+// вход выход админ
+baseController::setupRequest($_REQUEST);
 
 try {
 
@@ -16,7 +22,11 @@ try {
         // сохраняем изменения
         if (strpos($_SERVER['REQUEST_URI'], 'save_edit') && !empty($_POST['id'])) {
             appController::saveEdit($twig, $_POST);
-        } // обработка добавления
+        }
+        elseif($uri['path'] == '/admin'){
+            adminController::enter($_REQUEST,$twig);
+        }
+        // обработка добавления
         else {
             // echo '<pre>',print_r($_POST),'</pre>';
             appController::add($twig);
@@ -25,19 +35,20 @@ try {
     } else if ($_SERVER['REQUEST_METHOD'] == 'GET') {
 
         // удаляем
-        if (strpos($_SERVER['REQUEST_URI'], 'delete') && !empty($_REQUEST['id'])) {
+        if ($uri['path'] == '/delete' && !empty($_REQUEST['id'])) {
             appController::delete($twig, (int)$_REQUEST['id']);
         } // показ формы редактирования
-        else if (strpos($_SERVER['REQUEST_URI'], 'edit') && !empty($_REQUEST['id'])) {
+        else if ($uri['path'] == '/edit' && !empty($_REQUEST['id'])) {
             appController::edit($twig, (int)$_REQUEST['id']);
-        } elseif ($_SERVER['REQUEST_URI'] == '/') {
+        } elseif ($uri['path'] == '/') {
 //            echo 'start';
             appController::index($twig);
-        } else if ($_SERVER['REQUEST_URI'] == '/install') {
+        } else if ($uri['path'] == '/install') {
 //            echo 'start';
             appController::install($twig);
         } else {
-            echo '<div style="text-align:center;font-size:2rem; margin-top:40vh;" >нет такой страницы <a href="/">Перейти на первую страницу</a></div>';
+//            echo '<div style="text-align:center;font-size:2rem; margin-top:40vh;" >нет такой страницы <a href="/">Перейти на первую страницу</a></div>';
+            throw new \Exception('ссылка неверная', 452);
         }
 
     }
@@ -58,6 +69,8 @@ try {
 
 //    echo '<pre>', print_r($ex), '</pre>';
 //    echo '<pre>', print_r($ex->getMessage()), '</pre>';
+    echo '<pre>', print_r($_SERVER), '</pre>';
+
     $var_in = ['warning' => [
         'Варнинг! №' . $ex->getCode(),
         $ex->getMessage()

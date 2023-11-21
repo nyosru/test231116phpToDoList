@@ -7,10 +7,30 @@ use controller\service\dbService;
 class ItemsModel extends \controller\service\dbService
 {
 
-    public function getItems(): array
+    public function getPages($on_page, $now_page = 1): array
+    {
+        $res = $this->getCount('Task');
+        // максимальная страница
+        $res['max'] = ceil($res['count']/$on_page);
+        // текущая страница
+        $res['now'] = $now_page  <= $res['max'] ? $now_page  : 1;
+
+        $res['links'] = [];
+        for( $i = 1; $i <= $res['max']; $i++ ) {
+            $res['links'][] = [
+                'link' => 'page='.$i,
+                'number' => $i,
+                'active' => $i == $res['now']
+            ];
+        }
+
+        return $res;
+    }
+
+    public function getItems($page=1): array
     {
 //        $this->connect();
-        $res = $this->getData('Task');
+        $res = $this->getData('Task',null, $page);
         return $res;
     }
 
