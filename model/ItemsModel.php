@@ -10,9 +10,7 @@ class ItemsModel extends \controller\service\dbService
     public function getPages($on_page, $now_page = 1): array
     {
         $res = $this->getCount('Task');
-        // максимальная страница
         $res['max'] = ceil($res['count']/$on_page);
-        // текущая страница
         $res['now'] = $now_page  <= $res['max'] ? $now_page  : 1;
 
         $res['links'] = [];
@@ -29,7 +27,6 @@ class ItemsModel extends \controller\service\dbService
 
     public function getItems($page=1): array
     {
-//        $this->connect();
         $res = $this->getData('Task',null, $page);
         return $res;
     }

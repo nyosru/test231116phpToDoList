@@ -7,13 +7,14 @@ use controller\baseController;
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 $twig = new \Twig\Environment($loader, []);
 
-$uri = parse_url($_SERVER['REQUEST_URI']);
 
 // сортировка
 // вход выход админ
 baseController::setupRequest($_REQUEST);
 
 try {
+
+    $uri = parse_url($_SERVER['REQUEST_URI']);
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
