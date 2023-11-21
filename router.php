@@ -4,7 +4,7 @@ use controller\adminController;
 use controller\appController;
 use controller\baseController;
 
-$loader = new \Twig\Loader\FilesystemLoader('/test231116php/templates');
+$loader = new \Twig\Loader\FilesystemLoader('../templates');
 $twig = new \Twig\Environment($loader, [
     'cache' => 'template_c',
     'auto_reload' => true
