@@ -7,7 +7,6 @@ use controller\baseController;
 $loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
 $twig = new \Twig\Environment($loader, []);
 
-
 // сортировка
 // вход выход админ
 baseController::setupRequest($_REQUEST);
