@@ -129,41 +129,38 @@ class appController extends baseController
     public static function saveEdit($twig)
     {
 
-        if ($_SESSION['admin'] === true) {
-
-
-            self::$var_in['form_data'] = $_POST;
-
-            self::baseValidate($_POST, [
-                'opis' => ['need' => true],
-            ]);
-
-            // если проверка секрета не прошла
-            if (!self::secretCheck($_POST['id'] ?? 'x', $_POST['secret'] ?? 'x')) {
-                throw new \Exception('Что то пошло не так', 400);
-            }
-
-            // если ошибки найдены
-            if (!empty(self::$validate_error)) {
-                self::$var_in['warning'] = self::$validate_error;
-            } // ошибок нет > добавляем проверенные данные
-            else {
-                self::$var_in['form_data'] = [];
-
-                $items = new ItemsModel();
-
-                $datain = [
-                    'opis' => self::$validate_datas['opis'],
-                    'finished' => !empty($_POST['finished']) ? true : false
-                ];
-                $items->updateItem($_POST['id'], $datain);
-
-                self::$var_in['gooding'] = ['Запись #' . $_POST['id'] . ' изменена'];
-
-            }
-        } // если не авторизован
-        else {
+        // если не авторизован
+        if ($_SESSION['admin'] !== true)
             throw new \Exception('чтобы сохранить изменения пройдите авторизацию и повторите', 453);
+
+        self::$var_in['form_data'] = $_POST;
+
+        self::baseValidate($_POST, [
+            'opis' => ['need' => true],
+        ]);
+
+        // если проверка секрета не прошла
+        if (!self::secretCheck($_POST['id'] ?? 'x', $_POST['secret'] ?? 'x')) {
+            throw new \Exception('Что то пошло не так', 400);
+        }
+
+        // если ошибки найдены
+        if (!empty(self::$validate_error)) {
+            self::$var_in['warning'] = self::$validate_error;
+        } // ошибок нет > добавляем проверенные данные
+        else {
+            self::$var_in['form_data'] = [];
+
+            $items = new ItemsModel();
+
+            $datain = [
+                'opis' => self::$validate_datas['opis'],
+                'finished' => !empty($_POST['finished']) ? true : false
+            ];
+            $items->updateItem($_POST['id'], $datain);
+
+            self::$var_in['gooding'] = ['Запись #' . $_POST['id'] . ' изменена'];
+
         }
 
         self::index($twig);

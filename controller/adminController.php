@@ -25,9 +25,9 @@ class adminController extends baseController
         } else {
             $_SESSION['admin'] = false;
             $_SESSION['admin_flash'] = 'Логин Пароль указаны неверно';
-
         }
 
-        appController::index($twig);
+        header('Location: https://' . $_SERVER['HTTP_HOST'] . '/');
+        exit;
     }
 }
