@@ -4,8 +4,11 @@ use controller\adminController;
 use controller\appController;
 use controller\baseController;
 
-$loader = new \Twig\Loader\FilesystemLoader(__DIR__ . '/templates');
-$twig = new \Twig\Environment($loader, []);
+$loader = new \Twig\Loader\FilesystemLoader('/test231116php/templates');
+$twig = new \Twig\Environment($loader, [
+//    'cache' => 'template_c',
+//    'auto_reload' => true
+]);
 
 // сортировка
 // вход выход админ
